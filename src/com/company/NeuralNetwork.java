@@ -10,8 +10,9 @@ public class NeuralNetwork {
 
         public NeuralNetwork(int inodes, int hnodes, int onodes, double lr) {   //inodes - input nodes, hnodes - hidden nodes, onodes - output nodes, lr - learning rate 0 > lr < 1
 
-//                if(inodes != hnodes || hnodes != onodes || lr == 0)
-//                        throw new RuntimeException("invalid input params: inodes = " + inodes + " hnodes = " + hnodes + " onodes = " + onodes + " lr = " + lr);
+                if(inodes == 0 || hnodes == 0||  onodes ==0 || lr == 0)
+                        throw new RuntimeException("invalid input params: inodes = " + inodes + " hnodes = " + hnodes + " onodes = " + onodes + " lr = " + lr);
+
                 this.lr = lr;
                 this.wih = new double[hnodes][inodes];
                 this.who = new double[onodes][hnodes];
@@ -40,7 +41,7 @@ public class NeuralNetwork {
                 NeuralNetwork neuralNetwork = new NeuralNetwork(3, 4, 2, 0.3);
 
 
-                for (int i = 0; i < 1000; i++) {        //training
+                for (int i = 0; i < 100; i++) {        //training
                         neuralNetwork.train(data, target);
                         neuralNetwork.train(data2, target2);
 
@@ -61,7 +62,7 @@ public class NeuralNetwork {
         }
 
 
-        private double[] test(double[] inputs) {        //test method
+        public double[] test(double[] inputs) {        //test method
 
                 double[] hiddenInputs = Utils.multiplyMatrix(this.wih, inputs);
 
@@ -72,7 +73,7 @@ public class NeuralNetwork {
                 return Arrays.stream(finalInputs).map(Utils::activationFunction).toArray();
         }
 
-        private void train(double[] inputs, double[] target) {  //training method
+        public double train(double[] inputs, double[] target) {  //training method
 
                 double[] hiddenInputs = Utils.multiplyMatrix(this.wih, inputs);
 
@@ -91,18 +92,21 @@ public class NeuralNetwork {
 
                 //System.out.println("who = " + Arrays.deepToString(who));
                 //System.out.println("wih = " + Arrays.deepToString(wih));
+
+                return Arrays.stream(outputErrors).sum();
         }
+
+
+
 
         private double[][] evaluateWeights(double[] errors, double[] previousOutputs, double[] afterOutputs, double[][] weights) {
 
 
                 double[] doubles = Utils.elementwiseMultiplication(errors, afterOutputs, Utils.oneMinusMatrix(afterOutputs));
 
-
                 double[][] doubles1 = Utils.multiplyMatrix(doubles, previousOutputs);
 
                 double[][] evalOutWeights = Utils.scalarMultiplication(doubles1, lr);
-
 
                 return Utils.sumMatrix(weights, evalOutWeights);
         }
