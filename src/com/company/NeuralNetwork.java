@@ -10,21 +10,21 @@ public class NeuralNetwork {
 
         public NeuralNetwork(int inodes, int hnodes, int onodes, double lr) {   //inodes - input nodes, hnodes - hidden nodes, onodes - output nodes, lr - learning rate 0 > lr < 1
 
-                if(inodes != hnodes || hnodes != onodes || lr == 0)
-                        throw new RuntimeException("invalid input params: inodes = " + inodes + " hnodes = " + hnodes + " onodes = " + onodes + " lr = " + lr);
+//                if(inodes != hnodes || hnodes != onodes || lr == 0)
+//                        throw new RuntimeException("invalid input params: inodes = " + inodes + " hnodes = " + hnodes + " onodes = " + onodes + " lr = " + lr);
                 this.lr = lr;
                 this.wih = new double[hnodes][inodes];
                 this.who = new double[onodes][hnodes];
 
                 for (int i = 0; i < hnodes; i++) {      //init weights
                         for (int k = 0; k < inodes; k++) {
-                                wih[i][k] = Math.random();
+                                wih[i][k] = Math.random() - 0.5;
                         }
                 }
 
                 for (int i = 0; i < onodes; i++) {      //init weights
                         for (int k = 0; k < hnodes; k++) {
-                                who[i][k] = Math.random();
+                                who[i][k] = Math.random() - 0.5 ;
                         }
                 }
         }
@@ -34,10 +34,10 @@ public class NeuralNetwork {
 
                 double[] data = {1.0, 0.0, 1.0};        //training data
                 double[] data2 = {0.0, 1.0, 1.0};
-                double[] target = {1.0, 1.0, 0.0};
-                double[] target2 = {0.0, 1.0, 1.0};
+                double[] target = {1.0, 0.0};
+                double[] target2 = {0.0, 1.0};
 
-                NeuralNetwork neuralNetwork = new NeuralNetwork(3, 3, 3, 0.3);
+                NeuralNetwork neuralNetwork = new NeuralNetwork(3, 4, 2, 0.3);
 
 
                 for (int i = 0; i < 1000; i++) {        //training
@@ -86,14 +86,14 @@ public class NeuralNetwork {
 
                 double[] hiddenErrors = Utils.multiplyMatrix(Utils.transposeMatrix(who), outputErrors);
 
-                this.who = evaluateWeights(outputErrors, hiddenOutputs, finalOutputs);
-                this.wih = evaluateWeights(hiddenErrors, inputs, hiddenOutputs);
+                this.who = evaluateWeights(outputErrors, hiddenOutputs, finalOutputs, who);
+                this.wih = evaluateWeights(hiddenErrors, inputs, hiddenOutputs, wih);
 
                 //System.out.println("who = " + Arrays.deepToString(who));
                 //System.out.println("wih = " + Arrays.deepToString(wih));
         }
 
-        private double[][] evaluateWeights(double[] errors, double[] previousOutputs, double[] afterOutputs) {
+        private double[][] evaluateWeights(double[] errors, double[] previousOutputs, double[] afterOutputs, double[][] weights) {
 
 
                 double[] doubles = Utils.elementwiseMultiplication(errors, afterOutputs, Utils.oneMinusMatrix(afterOutputs));
@@ -104,7 +104,7 @@ public class NeuralNetwork {
                 double[][] evalOutWeights = Utils.scalarMultiplication(doubles1, lr);
 
 
-                return Utils.sumMatrix(who, evalOutWeights);
+                return Utils.sumMatrix(weights, evalOutWeights);
         }
 
 

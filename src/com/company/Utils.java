@@ -20,8 +20,8 @@ public class Utils {
 
         public static double[][] multiplyMatrix(double[] m1, double[] m2) {
 
-                if(m1.length != m2.length)
-                        throw new RuntimeException("could not multiply m1 = " + m1 + "m2 " + m2);
+//                if(m1.length != m2.length)
+//                        throw new RuntimeException("could not multiply m1 = " + m1.length + "m2 " + m2.length);
 
                 double[][] result = new double[m1.length][m2.length];
                 int outI = 0, outK = 0;
@@ -53,7 +53,7 @@ public class Utils {
 
         public static double[][] transposeMatrix(double[][] matrix){
 
-                double[][] result = new double[matrix.length][matrix[0].length];
+                double[][] result = new double[matrix[0].length][matrix.length];
 
                 for (int i = 0; i < matrix.length; i++) {
                         for (int k = 0; k < matrix[0].length; k++) {
@@ -75,6 +75,8 @@ public class Utils {
 
         public static double[] elementwiseMultiplication(double[] m1, double[] m2, double[] m3){
 
+                if (m1.length != m2.length || m2.length != m3.length)
+                        throw new RuntimeException("m1 length is " + m1.length + " m2 length is " + m2.length + " m3 length is " + m3.length);
                 double [] result = new double[m1.length];
                 for (int i = 0; i < m1.length; i++) {
                         result[i] = m1[i] * m2[i] * m3[i];
