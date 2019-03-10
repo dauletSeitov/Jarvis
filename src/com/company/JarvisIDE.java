@@ -39,6 +39,8 @@ public class JarvisIDE {
                 BufferedReader out = new BufferedReader(new FileReader(args[1]));
 
                 int k = 0 ;
+                int right = 0;
+                int incorrect = 0;
                 while ((line = out.readLine()) != null){
                         Data data = convertData(line);
 
@@ -46,12 +48,18 @@ public class JarvisIDE {
 
                         for (int i = 0; i < result.length; i++) {
                                 if(result[i] > 0.5)
-                                        if( Math.round(result[i]) == 1)
+                                        if( Math.round(result[i]) == data.target[i]) {
                                                 System.out.println("ok");
-                                        else
+                                                right++;
+                                        }
+                                        else {
                                                 System.out.println("i ERROR result: " + Arrays.toString(result) + "\ntarget: " + Arrays.toString(data.target));
-                        }
+                                                incorrect++;
+                                        }
+                                        }
                 }
+
+                System.out.println((100 * right)/(right+incorrect));
 
                 out.close();
         }
