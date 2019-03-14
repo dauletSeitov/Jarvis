@@ -1,6 +1,9 @@
+
 package com.company;
 
+import java.io.*;
 import java.util.Arrays;
+import java.util.Objects;
 
 public class NeuralNetwork {
 
@@ -61,6 +64,36 @@ public class NeuralNetwork {
 
         }
 
+        public void saveWeights (String path) throws IOException {
+
+                Objects.requireNonNull(path,"could not save path is null");
+
+                FileOutputStream fileOutputStream = new FileOutputStream(path);
+                ObjectOutputStream objectWriter = new ObjectOutputStream(fileOutputStream);
+
+                objectWriter.writeObject(wih);
+                objectWriter.writeObject(who);
+
+                objectWriter.close();
+        }
+
+
+        public void loadWeights(String path) throws IOException, ClassNotFoundException {
+
+                Objects.requireNonNull(path,"could not save path is null");
+
+                FileInputStream fileInputStream = new FileInputStream(path);
+                ObjectInputStream inputStream = new ObjectInputStream(fileInputStream);
+
+                wih = (double[][]) inputStream.readObject();
+                who = (double[][]) inputStream.readObject();
+
+                inputStream.close();
+
+
+
+        }
+
 
         public double[] test(double[] inputs) {        //test method
 
@@ -113,3 +146,17 @@ public class NeuralNetwork {
 
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,46 +1,51 @@
 package com.company;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Arrays;
 
 public class JarvisIDE {
 
-        public static void main(String[] args) throws IOException { // arg[0] - path, arg[1] - path
+        private static final String PATH = "/home/user/IdeaProjects/Jarvis/data.jarvis";
+        public static void main(String[] args) throws IOException, ClassNotFoundException { // arg[0] - path, arg[1] - path
 
-
-                System.out.println((int)0.53);
                 if(args.length < 2)
                         throw new RuntimeException("incorrect input params!");
 
                 NeuralNetwork neuralNetwork = new NeuralNetwork(784, 100, 10, 0.5);
 
-                BufferedReader br = new BufferedReader(new FileReader(args[0]));
-                String line = null;
-                int lineNumber = 0;
-                while ((line = br.readLine()) != null){
+                if (new File(PATH).isFile()){
+                        neuralNetwork.loadWeights(PATH);
+                } else {
 
-                        Data data = convertData(line);
-                        double error = neuralNetwork.train(data.inputs, data.target);
+                        BufferedReader br = new BufferedReader(new FileReader(args[0]));
+                        String line = null;
+                        int lineNumber = 0;
+                        while ((line = br.readLine()) != null) {
 
-                        if(lineNumber % 10 == 0)
-                                System.out.println("lineNumber = " + lineNumber + " \terror = " + Math.abs(error));
+                                Data data = convertData(line);
+                                double error = neuralNetwork.train(data.inputs, data.target);
 
-                        lineNumber++;
+                                if (lineNumber % 10 == 0)
+                                        System.out.println("lineNumber = " + lineNumber + " \terror = " + Math.abs(error));
 
-                       // if(lineNumber  == 20000)break;
+                                lineNumber++;
 
+                                // if(lineNumber  == 20000)break;
+
+                        }
+
+                        br.close();
+                        neuralNetwork.saveWeights(PATH);
                 }
-
-                br.close();
-
 
                 BufferedReader out = new BufferedReader(new FileReader(args[1]));
 
-                int k = 0 ;
                 int right = 0;
                 int incorrect = 0;
+                String line = null;
                 while ((line = out.readLine()) != null){
                         Data data = convertData(line);
 
@@ -56,7 +61,7 @@ public class JarvisIDE {
                                                 System.out.println("i ERROR result: " + Arrays.toString(result) + "\ntarget: " + Arrays.toString(data.target));
                                                 incorrect++;
                                         }
-                                        }
+                        }
                 }
 
                 System.out.println((100 * right)/(right+incorrect));
@@ -90,3 +95,15 @@ class Data {
         double[] inputs = new double[784];
         double[] target = new double[10];
 }
+
+
+
+
+
+
+
+
+
+
+
+
